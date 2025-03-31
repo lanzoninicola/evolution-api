@@ -6,32 +6,34 @@ services:
     depends_on:
       - redis
       - postgres
+    ports:
+      - 8080:8080
     volumes:
       - evolution_instances:/evolution/instances
     networks:
       - evolution-net
-    # env_file:
-      # - .env
-    # Adicionado para utilizar variáveis de ambiente com Portainer
     env_file:
-    - stack.env
+      - .env
     expose:
       - 8080
 
   redis:
     image: redis:latest
-    container_name: evolution_redis
-    command: redis-server --port 6379 --appendonly yes
-    volumes:
-      - evolution_redis:/data
     networks:
       - evolution-net
-    expose:
-      - 6379
+    container_name: redis
+    command: >
+      redis-server --port 6379 --appendonly yes
+    volumes:
+      - evolution_redis:/data
+    ports:
+      - 6379:6379
 
   postgres:
-    container_name: evolution_postgres
+    container_name: postgres
     image: postgres:15
+    networks:
+      - evolution-net
     command: ["postgres", "-c", "max_connections=1000", "-c", "listen_addresses=*"]
     restart: always
     ports:
@@ -43,32 +45,16 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - evolution-net
     expose:
       - 5432
-
-  nginx:
-    image: lanzoninicola/nginx-evolution:latest # Imagem customizada do nginx com configurações específicas => root\Docker\nginx\README.md
-    container_name: evolution_nginx
-    ports:
-      - 8088:80  # Porta pública 8088
-    depends_on:
-      - api
-    networks:
-      - evolution-net
-      - nginx-net
-    restart: always
 
 volumes:
   evolution_instances:
   evolution_redis:
   postgres_data:
 
+
 networks:
   evolution-net:
     name: evolution-net
-    driver: bridge
-  nginx-net:
-    name: nginx-net
     driver: bridge
