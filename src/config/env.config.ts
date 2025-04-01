@@ -1,7 +1,17 @@
 import { isBooleanString } from 'class-validator';
 import dotenv from 'dotenv';
 
+const dotenvConfig = {
+  path: '.env',
+};
+
+if (process.env.NODE_ENV === 'dev') {
+  dotenvConfig.path = `.env.${process.env.NODE_ENV}`;
+}
+
 dotenv.config();
+
+console.log({ env: process.env.DATABASE_CONNECTION_URI });
 
 export type HttpServer = {
   TYPE: 'http' | 'https';

@@ -12,3 +12,10 @@ COPY nginx.conf /etc/nginx/nginx.conf
 docker build -t lanzoninicola/nginx-evolution:latest .
 docker push lanzoninicola/nginx-evolution:latest
 
+# public address
+
+http://191.101.234.115:8088/
+
+# REST API
+
+https://doc.evolution-api.com/v2/api-reference/get-information

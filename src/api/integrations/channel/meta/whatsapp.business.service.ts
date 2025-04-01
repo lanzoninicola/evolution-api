@@ -785,6 +785,8 @@ export class BusinessStartupService extends ChannelStartupService {
           return await this.post(content, 'messages');
         }
         if (message['conversation']) {
+          console.log('inside conversation');
+
           content = {
             messaging_product: 'whatsapp',
             recipient_type: 'individual',
@@ -796,6 +798,9 @@ export class BusinessStartupService extends ChannelStartupService {
             },
           };
           quoted ? (content.context = { message_id: quoted.id }) : content;
+
+          console.log({ content });
+
           return await this.post(content, 'messages');
         }
         if (message['media']) {
@@ -912,6 +917,8 @@ export class BusinessStartupService extends ChannelStartupService {
         this.logger.error(messageSent);
         return messageSent;
       }
+
+      console.log({ messageSent });
 
       const messageRaw: any = {
         key: { fromMe: true, id: messageSent?.messages[0]?.id, remoteJid: createJid(number) },
